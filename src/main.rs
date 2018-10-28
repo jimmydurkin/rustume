@@ -3,6 +3,8 @@
 
 extern crate rocket;
 
+use rocket_contrib::Json;
+
 #[macro_use] extern crate rocket_contrib;
 #[macro_use] extern crate serde_derive;
 
@@ -174,13 +176,19 @@ mod resume {
     }
 }
 
-fn main() {
+#[catch(404)]
+fn not_found() -> Json<> {
+    Json(json!({
+        "status": "404 not found",
+    }))
+}
 
+fn main() {
     rocket::ignite()
         .mount("/contact",
                routes![contact::name,contact::email,contact::phone,contact::location,contact::full])
         .mount("/work", routes![work::history,work::current])
         .mount("/", routes![resume::full])
-
+        .catch(catchers![not_found])
         .launch();
 }

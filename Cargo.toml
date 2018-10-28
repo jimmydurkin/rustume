@@ -1,7 +1,7 @@
 [package]
 name = "rustume"
 version = "0.1.0"
-authors = ["jdurkin91 <jdurkin91@gmail.com>"]
+authors = ["jdurkin <jdurkin@buio.ch>"]
 
 [dependencies]
 rocket = "0.3.17"
