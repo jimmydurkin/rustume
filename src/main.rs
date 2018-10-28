@@ -21,16 +21,16 @@ mod contact {
 
     #[derive(Serialize)]
     pub struct ContactFull {
-        name: Name,
-        email: String,
-        phone: String,
-        location: String,
+        pub name: Name,
+        pub email: String,
+        pub phone: String,
+        pub location: String,
     }
 
     #[derive(Serialize)]
     pub struct Name {
-        first_name: String,
-        last_name: String,
+        pub first_name: String,
+        pub last_name: String,
     }
 
     #[get("/name")]
@@ -76,19 +76,19 @@ mod work {
 
     #[derive(Serialize)]
     pub struct WorkHistory {
-        work_history: Vec<WorkPlace>,
+        pub work_history: Vec<WorkPlace>,
     }
 
     #[derive(Serialize)]
     pub struct WorkPlace {
-        name: String,
-        title: String,
-        dates: String,
-        responsibilities: Vec<String>,
-        achievements: Vec<String>,
+        pub name: String,
+        pub title: String,
+        pub dates: String,
+        pub responsibilities: Vec<String>,
+        pub achievements: Vec<String>,
     }
 
-    fn uptake() -> WorkPlace {
+    pub fn uptake() -> WorkPlace {
         WorkPlace {
             name: "Uptake".to_string(),
             title: "Software Engineer".to_string(),
@@ -109,7 +109,7 @@ mod work {
         }
     }
 
-    fn parkwhiz() -> WorkPlace {
+    pub fn parkwhiz() -> WorkPlace {
         WorkPlace {
             name: "Parkwhiz".to_string(),
             title: "Devops Engineer".to_string(),
@@ -140,6 +140,38 @@ mod work {
             work_history: vec![parkwhiz(), uptake()]
         })
     }
+
+    #[get("/current")]
+    pub fn current() -> Json<WorkPlace> {
+        Json(parkwhiz())
+    }
+}
+
+mod resume {
+    use config;
+    use contact;
+    use work;
+    use rocket_contrib::Json;
+
+    #[derive(Serialize)]
+    pub struct ResumeFull {
+        contact: contact::ContactFull,
+        work_history: Vec<work::WorkPlace>,
+    }
+
+
+    #[get("/full")]
+    pub fn full() -> Json<ResumeFull> {
+        Json( ResumeFull{
+            contact: contact::ContactFull {
+                name: contact::Name { first_name: config::FIRST_NAME.to_string(), last_name: config::LAST_NAME.to_string(), },
+                email: config::EMAIL.to_string(),
+                phone: config::PHONE.to_string(),
+                location: config::LOCATION.to_string(),
+            },
+            work_history: vec![work::parkwhiz(), work::uptake()],
+        })
+    }
 }
 
 fn main() {
@@ -147,6 +179,8 @@ fn main() {
     rocket::ignite()
         .mount("/contact",
                routes![contact::name,contact::email,contact::phone,contact::location,contact::full])
-        .mount("/work", routes![work::history])
+        .mount("/work", routes![work::history,work::current])
+        .mount("/", routes![resume::full])
+
         .launch();
 }
