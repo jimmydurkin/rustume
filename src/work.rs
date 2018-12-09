@@ -59,11 +59,10 @@ pub fn parkwhiz() -> WorkPlace {
     }
 }
 
-
 #[get("/history")]
 pub fn history() -> Json<WorkHistory> {
     Json(WorkHistory {
-        work_history: vec![parkwhiz(), uptake()]
+        work_history: vec![parkwhiz(), uptake()],
     })
 }
 

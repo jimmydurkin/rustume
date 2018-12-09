@@ -25,27 +25,24 @@ pub fn name() -> Json<Name> {
 
 #[get("/phone")]
 pub fn phone() -> JsonValue {
-    json!({
-    "phone": config::PHONE
-    })
+    json!({ "phone": config::PHONE })
 }
 
 #[get("/email")]
 pub fn email() -> JsonValue {
-    json!({
-    "email": config::EMAIL
-    })
+    json!({ "email": config::EMAIL })
 }
 #[get("/location")]
 pub fn location() -> JsonValue {
-    json!({
-    "location": config::LOCATION
-    })
+    json!({ "location": config::LOCATION })
 }
 #[get("/full")]
 pub fn full() -> Json<ContactFull> {
-    Json( ContactFull{
-        name: Name { first_name: config::FIRST_NAME.to_string(), last_name: config::LAST_NAME.to_string(), },
+    Json(ContactFull {
+        name: Name {
+            first_name: config::FIRST_NAME.to_string(),
+            last_name: config::LAST_NAME.to_string(),
+        },
         email: config::EMAIL.to_string(),
         phone: config::PHONE.to_string(),
         location: config::LOCATION.to_string(),
